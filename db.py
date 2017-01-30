@@ -7,13 +7,12 @@ from bs4 import BeautifulSoup
 import sqlite3
 
 url_home = 'http://www.dealmoon.com'
-categories = ['Clothing-Jewelry-Bags', \
-              'Beauty', \
-              'Health-Personal-Care', \
-              'Nutrition-Supplements', \
-              'Baby', \
-              'Home-Garden', \
-              'Electronics']    
+categories = ['Clothing-Jewelry-Bags',
+              'Beauty',
+              'Health-Personal-Care',
+              'Nutrition-Supplements',
+              'Baby',
+              'Electronics']
 
 
 def init_db(drop=False):
@@ -24,7 +23,7 @@ def init_db(drop=False):
         c.execute("CREATE TABLE IF NOT EXISTS deals (id INTEGER UNIQUE, category TEXT, title TEXT, url TEXT, image TEXT, favorites INTEGER)")
 
 
-def get_row(url_home, categories):
+def store_data(url_home, categories):
     for category in ['Electronics']:  # categories:
         url_c = '/'.join([url_home, category])
 
@@ -47,7 +46,7 @@ def get_row(url_home, categories):
 
                     src = item.find('div', {'class': 'img_wrap'}).a.img['src']
 
-                    fav_num = item.find('em', {'class': 'fav-numbers'}).text
+                    fav_num = item.find('em', {'class': 'fav-numbers'}).text or 0
 
                     # table deals: data-id, category, title, url, src, fav_num
                     item_list.append([item['data-id'], category, title, url, src, fav_num])
@@ -55,14 +54,12 @@ def get_row(url_home, categories):
                 else:
                     print mtxt
 
-
             with sqlite3.connect("dealmoon.db") as connection:
                 c = connection.cursor()
-                
+
                 c.executemany('INSERT OR REPLACE INTO deals VALUES (?,?,?,?,?, ?)', item_list)
 
 
-
 if __name__ == '__main__':
-    init_db(drop=True)
-    get_row(url_home, categories)
+    init_db(drop=False)
+    store_data(url_home, categories)

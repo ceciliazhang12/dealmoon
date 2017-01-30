@@ -1,16 +1,15 @@
 # -*- coding:utf-8 -*-
 
-from flask import Flask, render_template, redirect, url_for, request, session, flash
+from flask import Flask, render_template, url_for
 from functools import wraps
 import sqlite3
 
-categories = ['Clothing-Jewelry-Bags', \
-              'Beauty', \
-              'Health-Personal-Care', \
-              'Nutrition-Supplements', \
-              'Baby', \
-              'Home-Garden', \
-              'Electronics'] 
+categories = ['Clothing-Jewelry-Bags',
+              'Beauty',
+              'Health-Personal-Care',
+              'Nutrition-Supplements',
+              'Baby',
+              'Electronics']
 
 app = Flask(__name__)
 
@@ -22,7 +21,8 @@ def home():
             c.execute("SELECT * FROM deals WHERE category = '{}' ORDER BY favorites LIMIT 10".format(category))
             top_items = c.fetchall()
 
-    return render_template("index.html", item='I love Cecilia') # render a template
+    return render_template("index.html", categories=categories, top_items=top_items)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
