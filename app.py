@@ -31,7 +31,7 @@ def run_every_10_minutes():
 def run_schedule():
     while 1:
         schedule.run_pending()
-        time.sleep(1)
+        time.sleep(10)
 
 
 @app.route("/")
@@ -52,7 +52,8 @@ def home():
 
 
 if __name__ == "__main__":
-    # schedule.every(10).minutes.do(run_every_10_minutes)
-    # t = Thread(target=run_schedule)
-    # t.start()
+    init_db()
+    schedule.every(10).minutes.do(run_every_10_minutes)
+    t = Thread(target=run_schedule)
+    t.start()
     app.run(debug=True)
