@@ -10,7 +10,6 @@ url_home = 'http://www.dealmoon.com'
 categories = ['Clothing-Jewelry-Bags',
               'Beauty',
               'Health-Personal-Care',
-              'Nutrition-Supplements',
               'Baby',
               'Electronics']
 
@@ -23,8 +22,8 @@ def init_db(drop=False):
         c.execute("CREATE TABLE IF NOT EXISTS deals (id INTEGER UNIQUE, category TEXT, title TEXT, url TEXT, image TEXT, favorites INTEGER)")
 
 
-def store_data(url_home, categories):
-    for category in ['Electronics']:  # categories:
+def get_data(url_home, categories):
+    for category in categories:
         url_c = '/'.join([url_home, category])
 
         r = requests.get(url_c)
@@ -52,7 +51,8 @@ def store_data(url_home, categories):
                     item_list.append([item['data-id'], category, title, url, src, fav_num])
 
                 else:
-                    print mtxt
+                    # sth wrong happened
+                    print "title info not found, the mtxt tag is:\n{}".format(mtxt)
 
             with sqlite3.connect("dealmoon.db") as connection:
                 c = connection.cursor()
@@ -62,4 +62,4 @@ def store_data(url_home, categories):
 
 if __name__ == '__main__':
     init_db(drop=False)
-    store_data(url_home, categories)
+    get_data(url_home, categories)
